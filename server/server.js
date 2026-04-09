@@ -29,19 +29,21 @@ const app = express();
 // Security Middlewares
 app.use(helmet());
 
-// Configure CORS for production
-const allowedOrigins = process.env.ALLOWED_ORIGINS 
-  ? process.env.ALLOWED_ORIGINS.split(',') 
-  : ['http://localhost:3000'];
-
+// Configure CORS
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+    // Allow same-origin requests (no origin header), local development, or any Vercel origin
+    if (!origin || process.env.NODE_ENV === 'development' || origin.includes('vercel.app')) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      // In production, we compare against allowed origins if provided
+      const allowed = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
+      if (allowed.includes(origin)) {
+        callback(null, true);
+      } else {
+        // Fallback: allow the request but do not set ACAO (standard CORS behavior)
+        callback(null, false);
+      }
     }
   },
   credentials: true
