@@ -111,8 +111,9 @@ export default function SearchPage() {
                       if (result.product && result.product.barcode) {
                         window.location.href = `/product/${result.product.barcode}`;
                       }
-                    } catch (err: any) {
-                      setError(err.message || "Engine failure during scan.");
+                    } catch (err: unknown) {
+                      const msg = err instanceof Error ? err.message : "Engine failure during scan.";
+                      setError(msg);
                     } finally {
                       setLoading(false);
                     }
