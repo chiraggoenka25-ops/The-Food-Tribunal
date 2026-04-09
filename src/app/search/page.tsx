@@ -96,9 +96,34 @@ export default function SearchPage() {
             />
           ))}
           {filteredProducts.length === 0 && (
-             <div className="col-span-full py-20 text-center text-zinc-500 glass-card rounded-xl">
-               No products found for &quot;{query}&quot;. Try a different term or scan a new product barcode.
-             </div>
+            <div className="col-span-full py-20 text-center flex flex-col items-center glass-card rounded-xl">
+              <Search className="w-12 h-12 text-zinc-700 mb-4" />
+              <h3 className="text-xl font-bold text-white mb-2 uppercase tracking-tight">No Results in Known Registry</h3>
+              <p className="text-zinc-500 max-w-sm mx-auto mb-8">
+                The barcode &quot;{query}&quot; has not been judged by the Tribunal yet. Would you like to initiate a deep scan?
+              </p>
+              {query.length >= 8 && (
+                <button 
+                  onClick={async () => {
+                    try {
+                      setLoading(true);
+                      const result = await API.scanProduct(query);
+                      if (result.productId) {
+                        window.location.href = `/product/${result.barcode}`;
+                      }
+                    } catch (err: any) {
+                      setError(err.message || "Engine failure during scan.");
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                  className="bg-white text-black font-bold uppercase tracking-wider px-8 py-4 rounded-lg hover:bg-zinc-200 transition-all flex items-center gap-2"
+                >
+                  <Loader2 className={`w-4 h-4 animate-spin ${!loading && 'hidden'}`} />
+                  Initiate Intelligence Scan
+                </button>
+              )}
+            </div>
           )}
         </div>
       )}
