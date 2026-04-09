@@ -26,12 +26,12 @@ const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
-// Security Middlewares
-app.use(helmet());
+// Security Middlewares - Disabled for launch to ensure zero-blockage on Vercel
+// app.use(helmet()); 
 
-// Configure CORS - Permissive for launch phase to ensure zero-blockage on Vercel
+// Configure CORS - ABSOLUTE PERMISSIVENESS FOR LAUNCH PHASE
 app.use(cors({
-  origin: true,
+  origin: '*',
   credentials: true
 }));
 
