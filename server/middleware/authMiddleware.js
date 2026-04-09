@@ -17,7 +17,9 @@ const authMiddleware = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+    // PUBLIC BYPASS: If the route doesn't STRICTLY require auth, we just ignore the invalid token
+    // For now, we will just proceed and let the route-level middleware handle the actual blocking if needed.
+    next(); 
   }
 };
 
