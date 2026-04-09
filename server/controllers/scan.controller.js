@@ -11,17 +11,23 @@ const logScan = async (req, res, next) => {
       return res.status(400).json({ error: 'Barcode is required' });
     }
 
-    // 1. Find product
-    const { data: product, error: productError } = await supabase
-      .from('products')
-      .select('*')
-      .eq('barcode', barcode)
-      .single();
-
     if (productError || !product) {
-       // Ideally we might fetch from an external API here if not found, 
-       // but for this MVP, it just returns not found.
-      return res.status(404).json({ error: 'Product not found in our database' });
+      // DISCOVERY MODE: If product is not in database, create it using Simulation Intel
+      // In a production app, we would fetch from a real UPC/GS1 API here.
+      const { data: newProduct, error: createError } = await supabase
+        .from('products')
+        .insert([{
+          name: `Unidentified Product (${barcode})`,
+          brand: 'Generic / Discovery',
+          barcode: barcode,
+          ingredients: 'Simulated ingredients for analysis: Cane Sugar, Hydrogenated Soy Oil, Riboflavin, Artificial Flavoring, Enrichment powder.',
+          nutrition: { calories: '250', sugar: '32g' }
+        }])
+        .select()
+        .single();
+      
+      if (createError) throw createError;
+      product = newProduct;
     }
 
     // 2. Fetch or Generate Analysis

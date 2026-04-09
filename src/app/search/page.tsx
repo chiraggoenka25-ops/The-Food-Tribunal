@@ -108,8 +108,8 @@ export default function SearchPage() {
                     try {
                       setLoading(true);
                       const result = await API.scanProduct(query);
-                      if (result.productId) {
-                        window.location.href = `/product/${result.barcode}`;
+                      if (result.product && result.product.barcode) {
+                        window.location.href = `/product/${result.product.barcode}`;
                       }
                     } catch (err: any) {
                       setError(err.message || "Engine failure during scan.");
