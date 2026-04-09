@@ -26,6 +26,11 @@ async function fetchAPI(endpoint: string, options: RequestInit = {}) {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
+    if (response.status === 401 && typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      // Optional: window.location.href = '/auth/login';
+    }
     console.error(`API ERROR [${response.status}]:`, data);
     throw new ApiError(data.error || response.statusText, response.status);
   }
