@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #050505;
+    --foreground: #f8fafc;
+    
+    --card: #0f0f11;
+    --card-foreground: #f8fafc;
+    
+    --border: #262626;
+    --input: #262626;
+    
+    --primary: #f8fafc;
+    --primary-foreground: #020617;
+    
+    --muted: #171717;
+    --muted-foreground: #a3a3a3;
+    
+    --accent: #262626;
+    --accent-foreground: #f8fafc;
+
+    --verdict-clean: #10b981;
+    --verdict-caution: #f59e0b;
+    --verdict-risk: #ef4444;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-white/10;
+  }
+  body {
+    @apply bg-[var(--background)] text-[var(--foreground)] antialiased min-h-screen selection:bg-white/20;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-white/[0.02] border border-white/[0.05] backdrop-blur-xl;
+  }
+  
+  .glow-clean {
+    box-shadow: 0 0 40px -10px rgba(16, 185, 129, 0.15);
+  }
+  
+  .glow-caution {
+    box-shadow: 0 0 40px -10px rgba(245, 158, 11, 0.15);
+  }
+  
+  .glow-risk {
+    box-shadow: 0 0 40px -10px rgba(239, 68, 68, 0.2);
+  }
+}
