@@ -29,23 +29,9 @@ const app = express();
 // Security Middlewares
 app.use(helmet());
 
-// Configure CORS
+// Configure CORS - Permissive for launch phase to ensure zero-blockage on Vercel
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow same-origin requests (no origin header), local development, or any Vercel origin
-    if (!origin || process.env.NODE_ENV === 'development' || origin.includes('vercel.app')) {
-      callback(null, true);
-    } else {
-      // In production, we compare against allowed origins if provided
-      const allowed = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
-      if (allowed.includes(origin)) {
-        callback(null, true);
-      } else {
-        // Fallback: allow the request but do not set ACAO (standard CORS behavior)
-        callback(null, false);
-      }
-    }
-  },
+  origin: true,
   credentials: true
 }));
 
